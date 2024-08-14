@@ -11,25 +11,50 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    index: true,
     validate: [validator.isEmail, 'Please enter a valid email address'],
   },
   password: {
     type: String,
     required: true,
+    minlength: 6,
+    validate: {
+      validator: function(v) {
+        return /[A-Z]/.test(v) && /[a-z]/.test(v) && /[0-9]/.test(v);
+      },
+      message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number',
+    },
   },
   profileImage: {
-    type: String, // URL or file path to the profile image
+    type: String,
+    validate: {
+      validator: function(v) {
+        return validator.isURL(v) || validator.isFQDN(v);
+      },
+      message: 'Invalid profile image URL',
+    },
   },
   mobileNumber: {
     type: String,
     validate: [validator.isMobilePhone, 'Please enter a valid mobile number'],
   },
   address: {
-    type: String,
+    street: String,
+    city: String,
+    state: String,
+    zip: String,
   },
   gender: {
     type: String,
     enum: ['Male', 'Female', 'Other'],
+  },
+  dateOfBirth: {
+    type: Date,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
   },
 }, {
   timestamps: true,
