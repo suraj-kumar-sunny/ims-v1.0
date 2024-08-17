@@ -1,0 +1,114 @@
+/* src/styles/Sidebar.css */
+
+/* CSS Variables for Theme Colors */
+:root {
+    --light-bg: #f0f0f0;
+    --dark-bg: #262626;
+    --light-text: #000;
+    --dark-text: #bfbfbf;
+    --sidebar-width-open: 250px;
+    --sidebar-width-closed: 60px;
+    --icon-color: var(--light-text);
+  }
+  
+  .dark {
+    --sidebar-bg: var(--dark-bg);
+    --sidebar-text: var(--dark-text);
+  }
+  
+  .light {
+    --sidebar-bg: var(--light-bg);
+    --sidebar-text: var(--light-text);
+  }
+  
+  .sidebar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+  }
+  
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    overflow: hidden;
+    position: relative;
+    transition: width 0.3s ease;
+  }
+  
+  .sidebar-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    transition: width 0.3s ease;
+  }
+  
+  .company-name {
+    margin: 10px 0;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+  }
+  
+  .sidebar-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 10px 20px;
+    width: 100%;
+    transition: background-color 0.1s, color 0.1s;
+    color: var(--sidebar-text);
+  }
+  
+  .sidebar-link:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar-icon {
+    margin-right: 10px;
+  }
+  
+  .toggle-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .toggle-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .toggle-icon {
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+    }
+  
+    .toggle-button {
+      margin: 10px;
+    }
+  }
+  

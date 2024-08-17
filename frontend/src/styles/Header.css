@@ -1,0 +1,92 @@
+/* src/styles/Header.css */
+.header-container {
+    background-color: #333;
+    color: white;
+    padding: 5px 20px; /* Reduced padding for a smaller header height */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 50px; /* Set a fixed height for the header */
+  }
+  
+  .theme-toggle {
+    margin-right: 10px;
+  }
+  
+  .user-menu {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-avatar {
+    width: 30px; /* Reduced size for the avatar */
+    height: 30px;
+    margin-right: 8px;
+  }
+  
+  .MuiMenu-paper {
+    background-color: #333; /* Dropdown background color */
+    color: white; /* Dropdown text color */
+    border-radius: 8px; /* Rounded corners for the dropdown */
+    min-width: 2px; /* Further reduced width for compactness */
+    padding: 4px; /* Reduced padding for compactness */
+  }
+  
+  .dropdown-header {
+    display: flex;
+    align-items: center;
+    padding: 4px; /* Further reduced padding */
+  }
+  
+  .dropdown-avatar {
+    width: 30px; /* Smaller size for the avatar */
+    height: 30px;
+    margin-right: 8px;
+  }
+  
+  .dropdown-info {
+    flex: 1;
+  }
+  
+  .user-name {
+    display: block;
+    font-weight: 400; /* Reduced font weight */
+    font-size: 14px; /* Reduced font size */
+  }
+  
+  .user-role {
+    display: block;
+    font-size: 12px; /* Reduced font size */
+    color: #ccc;
+  }
+  
+  .dropdown-tabs {
+    border-bottom: 1px solid #555; /* Border for tab indicator */
+  }
+  
+  .MuiTab-root {
+    font-size: 10px; /* Reduced font size for tabs */
+  }
+  
+  .tab-icon {
+    font-size: 2px; /* Reduced icon size for tab icons */
+  }
+  
+  .dropdown-body {
+    padding: 2px; /* Reduced padding for compactness */
+  }
+  
+  .dropdown-section {
+    padding: 0; /* Further reduced padding */
+  }
+  
+  .MuiMenuItem-root {
+    color: white;
+    font-size: 10px; /* Reduced font size for menu items */
+    padding: 2px 4px; /* Reduced padding for compactness */
+  }
+  
+  .dropdown-icon {
+    font-size: 10px; /* Reduced icon size for dropdown items */
+  }
+  

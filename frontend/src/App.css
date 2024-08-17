@@ -1,0 +1,14 @@
+/* src/styles/App.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  header {
+    margin-bottom: 0; /* Ensure no margin if already adjusted in Layout */
+  }
+  
+  main {
+    padding: 20px; /* Add padding to the main content area if needed */
+  }
+  
