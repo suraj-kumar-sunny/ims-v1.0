@@ -1,114 +1,117 @@
-/* src/styles/Sidebar.css */
+/* Updated Sidebar.css */
 
-/* CSS Variables for Theme Colors */
-:root {
-    --light-bg: #f0f0f0;
-    --dark-bg: #262626;
-    --light-text: #000;
-    --dark-text: #bfbfbf;
-    --sidebar-width-open: 250px;
-    --sidebar-width-closed: 60px;
-    --icon-color: var(--light-text);
-  }
-  
-  .dark {
-    --sidebar-bg: var(--dark-bg);
-    --sidebar-text: var(--dark-text);
-  }
-  
-  .light {
-    --sidebar-bg: var(--light-bg);
-    --sidebar-text: var(--light-text);
-  }
-  
+/* Container styles */
+.sidebar-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 200px; /* Default width */
+  background-color: var(--sidebar-background);
+  color: var(--sidebar-text);
+  overflow: hidden;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar-container.closed {
+  width: 40px; /* Collapsed width */
+}
+
+.sidebar-container.open:hover {
+  background-color: var(--sidebar-hover);
+}
+
+/* Sidebar content */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.toggle-button {
+  position: absolute;
+  top: 9px; /* Adjusted spacing from top */
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+  margin-top: 10px; /* Add margin-top to adjust positioning */
+}
+
+.toggle-icon {
+  font-size: 20px; /* Adjust icon size if needed */
+}
+
+.sidebar-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+
+.company-name {
+  font-size: 16px;
+  padding: 5px;
+  font-weight: bold;
+  margin: 9px 0 30px; /* Adjusted margins for spacing */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Sidebar links */
+.sidebar-links {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+.sidebar-link:hover {
+  color: var(--link-hover);
+}
+
+.sidebar-icon {
+  font-size: 12px; /* Adjust icon size if needed */
+  margin-right: 12px; /* Adjusted gap between icon and text */
+}
+
+.sidebar-link span {
+  font-size: 14px; /* Adjusted text size */
+  margin-left: 10px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-link:hover span {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .sidebar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    position: relative;
+    width: 180px;
   }
-  
-  .sidebar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-    background-color: var(--sidebar-bg);
-    color: var(--sidebar-text);
-    overflow: hidden;
-    position: relative;
-    transition: width 0.3s ease;
+
+  .sidebar-container.closed {
+    width: 45px;
   }
-  
-  .sidebar-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    transition: width 0.3s ease;
+}
+
+@media (max-width: 480px) {
+  .sidebar-container {
+    width: 160px;
   }
-  
-  .company-name {
-    margin: 10px 0;
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
-    width: 100%;
+
+  .sidebar-container.closed {
+    width: 40px;
   }
-  
-  .sidebar-links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .sidebar-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    padding: 10px 20px;
-    width: 100%;
-    transition: background-color 0.1s, color 0.1s;
-    color: var(--sidebar-text);
-  }
-  
-  .sidebar-link:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-  
-  .sidebar-icon {
-    margin-right: 10px;
-  }
-  
-  .toggle-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    margin: 20px 0;
-    padding: 10px;
-    border-radius: 50%;
-    transition: background-color 0.3s ease;
-  }
-  
-  .toggle-button:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-  
-  .toggle-icon {
-    background-color: var(--sidebar-bg);
-    color: var(--sidebar-text);
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 100%;
-    }
-  
-    .toggle-button {
-      margin: 10px;
-    }
-  }
-  
+}
