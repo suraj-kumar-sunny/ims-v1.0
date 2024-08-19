@@ -20,19 +20,3 @@
   padding: 16px;
 }
 
-/* Example media query for responsive design */
-@media (max-width: 768px) {
-  .layout-container {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    height: auto;
-    order: 1;
-  }
-
-  .main-container {
-    order: 2;
-  }
-}
