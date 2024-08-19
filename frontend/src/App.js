@@ -1,3 +1,4 @@
+// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -6,7 +7,7 @@ import Register from './pages/auth/Register';
 import Home from './pages/Home';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import NotFound from './pages/auth/NotFound';
-import Layout from './components/Layout'; 
+import Layout from './components/Layout';
 import './App.css';
 
 const App = () => {
@@ -19,7 +20,7 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/home" element={<Home />} />
-            <Route path="*" element={<NotFound />} /> {/* Fallback for unmatched routes */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>
       </Layout>

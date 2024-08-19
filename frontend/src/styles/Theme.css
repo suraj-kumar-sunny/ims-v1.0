@@ -1,21 +1,9 @@
-/* Example Theme.css */
 :root {
   --sidebar-background: #333;
   --sidebar-text: #fff;
-  --sidebar-hover: #444;
-  --link-hover: #ddd;
-}
-
-[data-theme='dark'] {
-  --sidebar-background: #222;
-  --sidebar-text: #eee;
-  --sidebar-hover: #333;
-  --link-hover: #ccc;
-}
-
-[data-theme='light'] {
-  --sidebar-background: #fff;
-  --sidebar-text: #000;
-  --sidebar-hover: #f0f0f0;
-  --link-hover: #555;
+  --link-hover: #ff0;
+  --link-background-hover: #444;
+  --footer-border: #444;
+  --footer-text: #aaa;
+  --focus-color: #ff0;
 }

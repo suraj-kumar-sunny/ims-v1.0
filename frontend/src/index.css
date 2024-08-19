@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Tailwind CSS for Sidebar.css or Tailwind styles */
+
+@layer components {
+    .sidebar-overlay {
+      @apply fixed inset-0 bg-black bg-opacity-50 z-40;
+    }
+    
+    .sidebar-menu {
+      @apply fixed inset-0 bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out;
+    }
+    
+    .sidebar-menu-hidden {
+      @apply translate-x-full;
+    }
+    
+    .sidebar-menu-visible {
+      @apply translate-x-0;
+    }
+  }
+  

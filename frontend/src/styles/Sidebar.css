@@ -1,12 +1,10 @@
-/* Updated Sidebar.css */
 
-/* Container styles */
 .sidebar-container {
-  position: relative;
+  position: relative; /* Use fixed positioning for better control on scroll */
   top: 0;
   left: 0;
   height: 100vh;
-  width: 200px; /* Default width */
+  width: 200px; /* Default width for larger screens */
   background-color: var(--sidebar-background);
   color: var(--sidebar-text);
   overflow: hidden;
@@ -14,12 +12,34 @@
   z-index: 1000;
 }
 
-.sidebar-container.closed {
-  width: 40px; /* Collapsed width */
+.backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.sidebar-container.open:hover {
-  background-color: var(--sidebar-hover);
+/* Container styles */
+.sidebar-container {
+  position: relative; /* Fixed positioning for better control */
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 60px; /* Default width for collapsed state */
+  background-color: var(--sidebar-background, #333); /* Fallback color */
+  color: var(--sidebar-text, #fff); /* Fallback color */
+  overflow: hidden;
+  transition: width 0.5s ease, background-color 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar-container.closed {
+  width: 50px; /* Collapsed width for larger screens */
+  .sidebar-footer{
+    display: none;
+  }
+}
+
+.sidebar-container.open {
+  width: 200px; /* Expanded width for larger screens */
 }
 
 /* Sidebar content */
@@ -27,91 +47,189 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative; /* For footer positioning */
 }
 
+/* Toggle button */
 .toggle-button {
   position: absolute;
-  top: 9px; /* Adjusted spacing from top */
-  right: 10px;
-  background: none;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(58, 58, 58);
+  border-radius: 50%;
   border: none;
   cursor: pointer;
+  padding: 8px;
   z-index: 1001;
-  margin-top: 10px; /* Add margin-top to adjust positioning */
+  outline: none; /* Remove default focus outline */
+}
+
+.toggle-button:focus {
+  outline: 2px solid var(--focus-color, #ff0); /* Add focus styles */
 }
 
 .toggle-icon {
-  font-size: 20px; /* Adjust icon size if needed */
+  font-size: 24px; /* Larger icon for better touch targets on mobile */
+  transition: transform 0.3s ease;
 }
 
-.sidebar-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 5px;
-}
-
+/* Company name */
 .company-name {
-  font-size: 16px;
-  padding: 5px;
+  margin: 70px 10px 10px 10px;
+  font-size: 18px;
+  padding: 10px;
   font-weight: bold;
-  margin: 9px 0 30px; /* Adjusted margins for spacing */
+  text-align: center;
   transition: opacity 0.3s ease, transform 0.3s ease;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+}
+
+.company-name.hide {
+  opacity: 0;
+  transform: scale(0.5);
 }
 
 /* Sidebar links */
 .sidebar-links {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  overflow-y: auto; /* Allow scrolling if links overflow */
 }
 
 .sidebar-link {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
   text-decoration: none;
   color: inherit;
-  transition: color 0.3s ease;
+  padding: 10px;
+  border-radius: 4px;
+  position: relative;  
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Add ellipsis if text overflows */
+}
+
+/* Active Link Styling */
+.sidebar-link.active {
+  background-color: var(--link-active-background, #666); /* Fallback color */
+  color: var(--link-active-text, #fff); /* Fallback color */
 }
 
 .sidebar-link:hover {
-  color: var(--link-hover);
-}
-
-.sidebar-icon {
-  font-size: 12px; /* Adjust icon size if needed */
-  margin-right: 12px; /* Adjusted gap between icon and text */
+  color: var(--link-hover, #ff0); /* Fallback color */
+  background-color: var(--link-background-hover, #444); /* Fallback color */
 }
 
 .sidebar-link span {
-  font-size: 14px; /* Adjusted text size */
-  margin-left: 10px;
+  font-size: 14px; /* Default font size */
+  margin-left: 12px;
+  opacity: 1;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.sidebar-link:hover span {
-  opacity: 1;
-  transform: translateX(5px);
+
+/* Hide text when sidebar is collapsed */
+.sidebar-container.closed .sidebar-link span {
+  display: none; /* Hide text */
+}
+
+/* Show text when sidebar is expanded */
+.sidebar-container.open .sidebar-link span {
+  display: inline; /* Show text */
+}
+
+/* Footer styles */
+.sidebar-footer {
+  padding: 10px;
+  border-top: 1px solid var(--footer-border, #444); /* Fallback color */
+  text-align: center;
+  font-size: 12px;
+  color: var(--footer-text, #aaa); /* Fallback color */
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+
+/* For tablets and smaller desktops */
+@media (max-width: 1024px) {
   .sidebar-container {
     width: 180px;
   }
 
   .sidebar-container.closed {
-    width: 45px;
+    width: 50px;
+  }
+
+  .company-name {
+    font-size: 16px;
+  }
+
+  .toggle-icon {
+    font-size: 22px;
+  }
+
+  .sidebar-link span {
+    font-size: 13px;
   }
 }
 
-@media (max-width: 480px) {
+/* For mobile devices */
+@media (max-width: 768px) {
   .sidebar-container {
-    width: 160px;
+    width: 240px; /* Slightly wider for mobile */
   }
 
   .sidebar-container.closed {
-    width: 40px;
+    width: 50px;
+  }
+
+  .company-name {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .toggle-icon {
+    font-size: 18px;
+  }
+
+  .sidebar-link span {
+    font-size: 12px;
+    display: none; /* Hide text on mobile when sidebar is collapsed */
+  }
+
+  .sidebar-container.open .sidebar-link span {
+    display: inline; /* Show text when sidebar is expanded */
+  }
+}
+
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .sidebar-container {
+    width: 220px;
+  }
+
+  .sidebar-container.closed {
+    width: 50px;
+  }
+
+  .company-name {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .toggle-icon {
+    font-size: 18px;
+  }
+
+  .sidebar-link span {
+    font-size: 11px;
   }
 }

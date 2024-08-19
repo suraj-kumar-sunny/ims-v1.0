@@ -5,6 +5,7 @@ const Home = () => {
     return (
       <>
       <h1>Welcome, Hello guys</h1>
+      
       </>
     );
   };
