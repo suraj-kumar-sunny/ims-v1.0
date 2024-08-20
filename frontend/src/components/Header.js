@@ -161,12 +161,6 @@ const Header = () => {
         )}
         {selectedTab === 'settings' && (
           <Box sx={{ padding: 1 }}>
-            <MenuItem onClick={handleThemeToggle} sx={{ display: 'flex', alignItems: 'center', padding: '8px 16px' }}>
-              <ListItemIcon>
-                {mode === 'dark' ? <Brightness7 sx={{ fontSize: 18 }} /> : <Brightness4 sx={{ fontSize: 18 }} />}
-              </ListItemIcon>
-              <Typography variant="body2" sx={{ fontSize: 14 }}>Change Theme</Typography>
-            </MenuItem>
             <MenuItem onClick={handleClose} sx={{ display: 'flex', alignItems: 'center', padding: '8px 16px' }}>
               <ListItemIcon><SupportIcon sx={{ fontSize: 18 }} /></ListItemIcon>
               <Typography variant="body2" sx={{ fontSize: 14 }}>Support</Typography>
@@ -178,6 +172,13 @@ const Header = () => {
             <MenuItem onClick={handleClose} sx={{ display: 'flex', alignItems: 'center', padding: '8px 16px' }}>
               <ListItemIcon><HistoryIcon sx={{ fontSize: 18 }} /></ListItemIcon>
               <Typography variant="body2" sx={{ fontSize: 14 }}>History</Typography>
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleThemeToggle} sx={{ display: 'flex', alignItems: 'center', padding: '8px 16px' }}>
+              <ListItemIcon>
+                {mode === 'dark' ? <Brightness7 sx={{ fontSize: 18 }} /> : <Brightness4 sx={{ fontSize: 18 }} />}
+              </ListItemIcon>
+              <Typography variant="body2" sx={{ fontSize: 14 }}>Change Theme</Typography>
             </MenuItem>
           </Box>
         )}

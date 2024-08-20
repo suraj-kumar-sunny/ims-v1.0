@@ -1,14 +1,13 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { Home as HomeIcon, Login as LoginIcon, PersonAdd as RegisterIcon, Password as ForgotPasswordIcon } from '@mui/icons-material';
+import InfoIcon from '@mui/icons-material/Info';
+import HomeIcon from '@mui/icons-material/Home';
 import { motion } from 'framer-motion';
 import '../styles/Sidebar.css';
 
 const linkData = [
   { to: '/home', icon: <HomeIcon />, label: 'Home' },
-  { to: '/login', icon: <LoginIcon />, label: 'Login' },
-  { to: '/register', icon: <RegisterIcon />, label: 'Register' },
-  { to: '/forgot-password', icon: <ForgotPasswordIcon />, label: 'Forgot Password' }
+  { to: '/about', icon: <InfoIcon />, label: 'About' }
 ];
 
 const SidebarLinks = memo(({ isOpen, activeLink, onLinkClick }) => (

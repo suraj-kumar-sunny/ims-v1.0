@@ -1,9 +1,10 @@
+// src/pages/auth/Login.js
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, IconButton, Checkbox, FormControlLabel, Link, InputAdornment } from '@mui/material';
 import { Brightness4, Brightness7, Visibility, VisibilityOff } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext'; // Ensure correct path to your ThemeContext
 
 const containerVariants = {
   hidden: { opacity: 0, y: '-100vh' },
@@ -11,7 +12,7 @@ const containerVariants = {
   exit: { opacity: 0, y: '100vh', transition: { ease: 'easeInOut' } }
 };
 
-const Login = () => {
+const Login = ({onLogin}) => {
   const { toggleTheme, mode } = useTheme();
   const navigate = useNavigate();
   
@@ -20,7 +21,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '' });
 
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleClickShowPassword = () => setShowPassword(prev => !prev);
 
   const validateEmail = (value) => {
     if (!value) return 'Email is required';
@@ -48,10 +49,12 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     const emailError = validateEmail(email);
-    const passwordError = validatePassword(password);
+    const passwordError = validatePassword(password); 
+    
     
     if (!emailError && !passwordError) {
-      navigate('/home'); // Implement login logic here
+      onLogin();
+      navigate('/home');
     } else {
       setErrors({ email: emailError, password: passwordError });
     }
@@ -68,7 +71,7 @@ const Login = () => {
         bgcolor: theme => theme.palette.background.default,
         color: theme => theme.palette.text.primary,
         padding: 2,
-        position: 'relative', // Ensure positioning context for the IconButton
+        position: 'relative',
       }}
     >
       <IconButton
@@ -76,7 +79,7 @@ const Login = () => {
           position: 'absolute',
           top: 16,
           right: 16,
-          zIndex: 1, // Ensures the button is on top of other content
+          zIndex: 1,
         }}
         onClick={toggleTheme}
         color="inherit"
@@ -154,7 +157,8 @@ const Login = () => {
             />
 
             <Link href="#" variant="body2" 
-                sx={{ textDecoration: 'none', color: 'primary.main', cursor: 'pointer' }} onClick={() => navigate('/forgot-password')}>
+                sx={{ textDecoration: 'none', color: 'primary.main', cursor: 'pointer' }} 
+                onClick={() => navigate('/forgot-password')}>
               Forgot Password?
             </Link>
 
@@ -169,8 +173,11 @@ const Login = () => {
             </Button>
 
             <Typography variant="body2" sx={{ mt: 2 }}>
-              Don’t have an account? <Link onClick={() => navigate('/register')} 
-                sx={{ textDecoration: 'none', color: 'primary.main', cursor: 'pointer' }}>Register</Link>
+              Don’t have an account? <Link 
+                onClick={() => navigate('/register')} 
+                sx={{ textDecoration: 'none', color: 'primary.main', cursor: 'pointer' }}>
+                Register
+              </Link>
             </Typography>
           </form>
         </Box>
