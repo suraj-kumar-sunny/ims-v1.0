@@ -1,200 +1,538 @@
-// src/Register.js
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, FormControlLabel, Checkbox, Link } from '@mui/material';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  InputAdornment,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Grid,
+  IconButton,
+  Checkbox,
+  FormControlLabel
+} from '@mui/material';
+import {
+  Email as EmailIcon,
+  Lock as LockIcon,
+  AccountCircle as AccountCircleIcon,
+  LocationOn as LocationOnIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-
-const containerVariants = {
-  hidden: { opacity: 0, y: '-100vh' },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 40 } },
-  exit: { opacity: 0, y: '100vh', transition: { ease: 'easeInOut' } }
-};
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/material.css';
+import { Country, State, City } from 'country-state-city';
 
 const Register = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errors, setErrors] = useState({ name: '', email: '', password: '', confirmPassword: '' });
 
-  const validateName = (value) => {
-    if (!value) {
-      return 'Name is required';
+  const [formType, setFormType] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    mobile: '+91',
+    password: '',
+    confirmPassword: '',
+    locality: '',
+    country: 'IN',
+    state: '',
+    city: '',
+    gender: '',
+    storeName: ''
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setCountries(Country.getAllCountries().sort((a, b) => a.name.localeCompare(b.name)));
+  }, []);
+
+  useEffect(() => {
+    if (formData.country) {
+      setStates(State.getStatesOfCountry(formData.country).sort((a, b) => a.name.localeCompare(b.name)));
+      setFormData(prevData => ({ ...prevData, state: '', city: '' }));
     }
-    return '';
-  };
+  }, [formData.country]);
 
-  const validateEmail = (value) => {
-    if (!value) {
-      return 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(value)) {
-      return 'Email address is invalid';
+  useEffect(() => {
+    if (formData.state) {
+      setCities(City.getCitiesOfState(formData.country, formData.state).sort((a, b) => a.name.localeCompare(b.name)));
     }
-    return '';
-  };
+  }, [formData.state]);
 
-  const validatePassword = (value) => {
-    if (!value) {
-      return 'Password is required';
-    } else if (value.length < 6) {
-      return 'Password must be at least 6 characters long';
-    }
-    return '';
-  };
-
-  const validateConfirmPassword = (value, password) => {
-    if (!value) {
-      return 'Confirm password is required';
-    } else if (value !== password) {
-      return 'Passwords do not match';
-    }
-    return '';
-  };
-
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
-    if (name === 'name') {
-      setName(value);
-      setErrors(prevErrors => ({ ...prevErrors, name: validateName(value) }));
-    } else if (name === 'email') {
-      setEmail(value);
-      setErrors(prevErrors => ({ ...prevErrors, email: validateEmail(value) }));
-    } else if (name === 'password') {
-      setPassword(value);
-      setErrors(prevErrors => ({ ...prevErrors, password: validatePassword(value) }));
-    } else if (name === 'confirmPassword') {
-      setConfirmPassword(value);
-      setErrors(prevErrors => ({ ...prevErrors, confirmPassword: validateConfirmPassword(value, password) }));
-    }
+    setFormData(prevData => ({ ...prevData, [name]: value }));
+  }, []);
+
+  const handlePhoneChange = useCallback((value) => {
+    setFormData(prevData => ({ ...prevData, mobile: value }));
+  }, []);
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name) newErrors.name = 'Name is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    if (!formData.password) newErrors.password = 'Password is required';
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+    if (!formData.locality) newErrors.locality = 'Locality is required';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleRegister = () => {
-    const nameError = validateName(name);
-    const emailError = validateEmail(email);
-    const passwordError = validatePassword(password);
-    const confirmPasswordError = validateConfirmPassword(confirmPassword, password);
-
-    if (!nameError && !emailError && !passwordError && !confirmPasswordError) {
-      // Proceed with registration logic
-      navigate('/home');
-    } else {
-      setErrors({ name: nameError, email: emailError, password: passwordError, confirmPassword: confirmPasswordError });
+    if (validateForm()) {
+      setIsSubmitting(true);
+      console.log('Form Data:', formData);
+      setIsSubmitting(false);
+      navigate('/success');
     }
   };
 
+  const handleClickShowPassword = () => {
+    setShowPassword(prev => !prev);
+  };
+
+  const handleClickShowConfirmPassword = () => {
+    setShowConfirmPassword(prev => !prev);
+  };
+
+  const renderFormFields = () => (
+    <Grid container spacing={2}>
+      {formType && (
+        <>
+          {formType === 'Single User' ? (
+            <Grid item xs={12}>
+              <TextField
+                label="Owner Name"
+                variant="outlined"
+                fullWidth
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                error={!!errors.name}
+                helperText={errors.name}
+                sx={{
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': { borderColor: 'primary.main' },
+                    '&.Mui-focused fieldset': { borderColor: 'primary.main' }
+                  },
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                  }
+                }}
+                InputLabelProps={{ style: { color: 'text.secondary' } }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircleIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                  style: { color: 'text.primary' }
+                }}
+              />
+            </Grid>
+          ) : (
+            <>
+              {(formType === 'Company' || formType === 'Store') && (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label={formType === 'Store' ? 'Store Name' : 'Company Name'}
+                    variant="outlined"
+                    fullWidth
+                    name="storeName"
+                    value={formData.storeName}
+                    onChange={handleInputChange}
+                    error={!!errors.storeName}
+                    helperText={errors.storeName}
+                    sx={{
+                      mb: 2,
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': { borderColor: 'primary.main' },
+                        '&.Mui-focused fieldset': { borderColor: 'primary.main' }
+                      },
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'scale(1.02)',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                      }
+                    }}
+                    InputLabelProps={{ style: { color: 'text.secondary' } }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircleIcon color="primary" />
+                        </InputAdornment>
+                      ),
+                      style: { color: 'text.primary' }
+                    }}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Owner Name"
+                  variant="outlined"
+                  fullWidth
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  error={!!errors.name}
+                  helperText={errors.name}
+                  sx={{
+                    mb: 2,
+                    '& .MuiOutlinedInput-root': {
+                      '&:hover fieldset': { borderColor: 'primary.main' },
+                      '&.Mui-focused fieldset': { borderColor: 'primary.main' }
+                    },
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'scale(1.02)',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                    }
+                  }}
+                  InputLabelProps={{ style: { color: 'text.secondary' } }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <AccountCircleIcon color="primary" />
+                      </InputAdornment>
+                    ),
+                    style: { color: 'text.primary' }
+                  }}
+                />
+              </Grid>
+            </>
+          )}
+        </>
+      )}
+    </Grid>
+  );
+
+  const countryOptions = useMemo(() => (
+    countries.map(c => (
+      <MenuItem key={c.isoCode} value={c.isoCode}>
+        {c.name}
+      </MenuItem>
+    ))
+  ), [countries]);
+
+  const stateOptions = useMemo(() => (
+    states.map(s => (
+      <MenuItem key={s.isoCode} value={s.isoCode}>
+        {s.name}
+      </MenuItem>
+    ))
+  ), [states]);
+
+  const cityOptions = useMemo(() => (
+    cities.length === 0 ? (
+      <MenuItem value="">No Cities Available</MenuItem>
+    ) : (
+      cities.map(c => (
+        <MenuItem key={c.name} value={c.name}>
+          {c.name}
+        </MenuItem>
+      ))
+    )
+  ), [cities]);
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        bgcolor: 'background.default',
-        color: 'text.primary',
-        padding: 2,
-      }}
-    >
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        style={{ width: '100%', maxWidth: '350px' }}
-      >
-        <Box
-          sx={{
-            backgroundColor: 'background.paper',
-            borderRadius: 2,
-            boxShadow: 3,
-            padding: 3,
-            textAlign: 'center',
-          }}
-        >
-          <Typography variant="h5" gutterBottom>
-            Register
-          </Typography>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100vh',
+      bgcolor: 'background.default',
+      color: 'text.primary',
+      px: { xs: 2, sm: 4 }, // Padding on X axis for responsive design
+      py: { xs: 4, sm: 8 }  // Padding on Y axis for responsive design
+    }}>
+      <Box sx={{
+        backgroundColor: 'background.paper',
+        borderRadius: 2,
+        boxShadow: 3,
+        px: 3,  // Padding inside the box
+        py: 3,  // Padding inside the box
+        textAlign: 'center',
+        width: '100%',
+        maxWidth: '800px',
+        mt: 2,   // Margin top for separation from other elements
+        mb: 2    // Margin bottom for separation from other elements
+      }}>
+        <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
+          Register
+        </Typography>
 
-          <TextField
-            label="Name"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            name="name"
-            value={name}
-            onChange={handleInputChange}
-            error={!!errors.name}
-            helperText={errors.name}
-            InputLabelProps={{ style: { color: 'text.secondary' } }}
-            InputProps={{ style: { color: 'text.primary' } }}
-          />
-
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            name="email"
-            value={email}
-            onChange={handleInputChange}
-            error={!!errors.email}
-            helperText={errors.email}
-            InputLabelProps={{ style: { color: 'text.secondary' } }}
-            InputProps={{ style: { color: 'text.primary' } }}
-          />
-
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            name="password"
-            value={password}
-            onChange={handleInputChange}
-            error={!!errors.password}
-            helperText={errors.password}
-            InputLabelProps={{ style: { color: 'text.secondary' } }}
-            InputProps={{ style: { color: 'text.primary' } }}
-          />
-
-          <TextField
-            label="Confirm Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            name="confirmPassword"
-            value={confirmPassword}
-            onChange={handleInputChange}
-            error={!!errors.confirmPassword}
-            helperText={errors.confirmPassword}
-            InputLabelProps={{ style: { color: 'text.secondary' } }}
-            InputProps={{ style: { color: 'text.primary' } }}
-          />
-
-          <FormControlLabel
-            control={<Checkbox color="primary" />}
-            label="I agree to the terms and conditions"
-          />
-
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-            onClick={handleRegister}
+        <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+          <InputLabel>Registration Type</InputLabel>
+          <Select
+            value={formType}
+            onChange={(e) => setFormType(e.target.value)}
+            label="Registration Type"
           >
-            Register
-          </Button>
+            <MenuItem value="Single User">Single User</MenuItem>
+            <MenuItem value="Company">Company</MenuItem>
+            <MenuItem value="Store">Store</MenuItem>
+          </Select>
+        </FormControl>
 
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            Already have an account? <Link onClick={() => navigate('/login')}             
-            sx={{ textDecoration: 'none', color: 'primary.main', cursor: 'pointer' }}>Login</Link>
-          </Typography>
-        </Box>
-      </motion.div>
+        {renderFormFields()}
+
+        {formType && (
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <PhoneInput
+                country={'in'}
+                value={formData.mobile}
+                onChange={handlePhoneChange}
+                inputStyle={{
+                  width: '100%',
+                  border: '1px solid #ced4da',
+                  borderRadius: '4px',
+                  backgroundColor: 'transparent',
+                  padding: '12px', // Padding inside PhoneInput
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Email"
+                type="email"
+                variant="outlined"
+                fullWidth
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                sx={{
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': { borderColor: 'primary.main' },
+                    '&.Mui-focused fieldset': { borderColor: 'primary.main' }
+                  },
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                  }
+                }}
+                InputLabelProps={{ style: { color: 'text.secondary' } }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                  style: { color: 'text.primary' }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                variant="outlined"
+                fullWidth
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                sx={{
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': { borderColor: 'primary.main' },
+                    '&.Mui-focused fieldset': { borderColor: 'primary.main' }
+                  },
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                  }
+                }}
+                InputLabelProps={{ style: { color: 'text.secondary' } }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword} edge="end">
+                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  style: { color: 'text.primary' }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Confirm Password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                variant="outlined"
+                fullWidth
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword}
+                sx={{
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': { borderColor: 'primary.main' },
+                    '&.Mui-focused fieldset': { borderColor: 'primary.main' }
+                  },
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                  }
+                }}
+                InputLabelProps={{ style: { color: 'text.secondary' } }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowConfirmPassword} edge="end">
+                        {showConfirmPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  style: { color: 'text.primary' }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Locality"
+                variant="outlined"
+                fullWidth
+                name="locality"
+                value={formData.locality}
+                onChange={handleInputChange}
+                error={!!errors.locality}
+                helperText={errors.locality}
+                sx={{
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': { borderColor: 'primary.main' },
+                    '&.Mui-focused fieldset': { borderColor: 'primary.main' }
+                  },
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                  }
+                }}
+                InputLabelProps={{ style: { color: 'text.secondary' } }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LocationOnIcon color="primary" />
+                    </InputAdornment>
+                  ),
+                  style: { color: 'text.primary' }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+                <InputLabel>Country</InputLabel>
+                <Select
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  label="Country"
+                  name="country"
+                >
+                  {countryOptions}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+                <InputLabel>State</InputLabel>
+                <Select
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  label="State"
+                  name="state"
+                >
+                  {stateOptions}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+                <InputLabel>City</InputLabel>
+                <Select
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  label="City"
+                  name="city"
+                >
+                  {cityOptions}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        )}
+
+        {formType && (
+          <>
+            <FormControlLabel
+              control={<Checkbox color="primary" />}
+              label="I agree to the terms and conditions"
+              sx={{ mb: 2 }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleRegister}
+              disabled={isSubmitting}
+              sx={{
+                mt: 2,
+                '&:hover': {
+                  backgroundColor: 'primary.dark',
+                  transform: 'scale(0.98)',
+                  transition: 'all 0.3s ease'
+                }
+              }}
+            >
+              {isSubmitting ? 'Registering...' : 'Register'}
+            </Button>
+          </>
+        )}
+
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          Already have an account?{' '}
+          <Button onClick={() => navigate('/login')} sx={{ textDecoration: 'none', color: 'primary.main' }}>
+            Login
+          </Button>
+        </Typography>
+      </Box>
     </Box>
   );
 };

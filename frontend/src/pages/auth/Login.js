@@ -1,7 +1,6 @@
-// src/pages/auth/Login.js
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, IconButton, Checkbox, FormControlLabel, Link, InputAdornment } from '@mui/material';
-import { Brightness4, Brightness7, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Brightness4, Brightness7, Visibility, VisibilityOff, Email as EmailIcon, Lock as LockIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext'; // Ensure correct path to your ThemeContext
@@ -12,7 +11,7 @@ const containerVariants = {
   exit: { opacity: 0, y: '100vh', transition: { ease: 'easeInOut' } }
 };
 
-const Login = ({onLogin}) => {
+const Login = ({ onLogin }) => {
   const { toggleTheme, mode } = useTheme();
   const navigate = useNavigate();
   
@@ -51,7 +50,6 @@ const Login = ({onLogin}) => {
     const emailError = validateEmail(email);
     const passwordError = validatePassword(password); 
     
-    
     if (!emailError && !passwordError) {
       onLogin();
       navigate('/home');
@@ -80,6 +78,9 @@ const Login = ({onLogin}) => {
           top: 16,
           right: 16,
           zIndex: 1,
+          '&:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          }
         }}
         onClick={toggleTheme}
         color="inherit"
@@ -102,6 +103,11 @@ const Login = ({onLogin}) => {
             boxShadow: 3,
             padding: 3,
             textAlign: 'center',
+            '&:hover': {
+              boxShadow: 6,
+              transform: 'scale(1.02)',
+              transition: 'all 0.3s ease',
+            }
           }}
         >
           <Typography variant="h5" gutterBottom>
@@ -120,7 +126,21 @@ const Login = ({onLogin}) => {
               error={!!errors.email}
               helperText={errors.email}
               InputLabelProps={{ style: { color: 'text.secondary' } }}
-              InputProps={{ style: { color: 'text.primary' } }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <EmailIcon color="action" />
+                  </InputAdornment>
+                ),
+                style: { color: 'text.primary' }
+              }}
+              sx={{
+                '&:hover .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'primary.main',
+                  },
+                },
+              }}
             />
 
             <TextField
@@ -136,7 +156,11 @@ const Login = ({onLogin}) => {
               helperText={errors.password}
               InputLabelProps={{ style: { color: 'text.secondary' } }}
               InputProps={{
-                style: { color: 'text.primary' },
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon color="action" />
+                  </InputAdornment>
+                ),
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
@@ -148,6 +172,14 @@ const Login = ({onLogin}) => {
                     </IconButton>
                   </InputAdornment>
                 ),
+                style: { color: 'text.primary' }
+              }}
+              sx={{
+                '&:hover .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'primary.main',
+                  },
+                },
               }}
             />
 
@@ -156,9 +188,19 @@ const Login = ({onLogin}) => {
               label="Remember me"
             />
 
-            <Link href="#" variant="body2" 
-                sx={{ textDecoration: 'none', color: 'primary.main', cursor: 'pointer' }} 
-                onClick={() => navigate('/forgot-password')}>
+            <Link
+              href="#"
+              variant="body2"
+              sx={{ 
+                textDecoration: 'none', 
+                color: 'primary.main', 
+                cursor: 'pointer',
+                '&:hover': {
+                  textDecoration: 'underline',
+                }
+              }}
+              onClick={() => navigate('/forgot-password')}
+            >
               Forgot Password?
             </Link>
 
@@ -167,15 +209,31 @@ const Login = ({onLogin}) => {
               variant="contained"
               color="primary"
               fullWidth
-              sx={{ mt: 2 }}
+              sx={{ 
+                mt: 2, 
+                '&:hover': {
+                  backgroundColor: 'primary.dark',
+                  transform: 'scale(0.98)',
+                  transition: 'all 0.3s ease',
+                }
+              }}
             >
               Login
             </Button>
 
             <Typography variant="body2" sx={{ mt: 2 }}>
-              Don’t have an account? <Link 
-                onClick={() => navigate('/register')} 
-                sx={{ textDecoration: 'none', color: 'primary.main', cursor: 'pointer' }}>
+              Don’t have an account? 
+              <Link
+                onClick={() => navigate('/register')}
+                sx={{ 
+                  textDecoration: 'none', 
+                  color: 'primary.main', 
+                  cursor: 'pointer',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  }
+                }}
+              >
                 Register
               </Link>
             </Typography>
